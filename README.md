@@ -21,7 +21,7 @@ No Azure subscription or API key required - everything runs **100% locally** usi
 | **Knowledge Mining** | Full-text Search, Vector Search, Facets, Word Cloud |
 | **Generative AI** | Prompt Engineering, RAG Simulation, Text Generation, Token Analysis |
 | **Practice Quiz** | 25 questions across all 5 domains with explanations and scoring |
-| **Classroom Challenge** | 4-round gamified activity: Service Matcher, Spot the Bug, Architect, Speed Quiz Blitz |
+| **Classroom Challenge** | 5-round gamified activity: Service Matcher, Spot the Bug, Architect, Speed Quiz Blitz, Myth Busters |
 
 ---
 
@@ -137,7 +137,7 @@ AI102Explorer/
   - knowledge_mining.py          Knowledge Mining module
   - generative_ai.py             Generative AI module
   - quiz.py                      25-question practice quiz
-  - classroom_challenge.py       4-round in-class gamified activity
+  - classroom_challenge.py       5-round in-class gamified activity (670 pts)
 ```
 
 ---
@@ -170,7 +170,9 @@ AI102Explorer/
 
 ## Classroom Activity
 
-The **AI Engineer Challenge Room** is a 4-round in-class activity designed for 30-45 minutes.
+The **AI Engineer Challenge Room** is a 5-round in-class activity designed for 45-60 minutes.
+Rounds: 🎯 Service Matcher · 🐛 Spot the Bug · 🏗️ Architect · ⚡ Speed Quiz · 💥 Myth Busters  
+Max score: **670 pts** — badges from Apprentice up to Champion.  
 See [CLASSROOM_GUIDE.md](CLASSROOM_GUIDE.md) for full setup instructions, round descriptions, and scoring details.
 
 ---
