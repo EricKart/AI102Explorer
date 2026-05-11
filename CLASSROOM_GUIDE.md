@@ -5,40 +5,92 @@ Designed for **30–45 minutes** in class. Runs **100% locally** — no Azure su
 
 ---
 
-## For Students: Getting Started
+## Already Set Up? Quick Relaunch
 
-### Step 1 — Install Python (if you haven't already)
+If you cloned and set up the repo in a previous session, just pull the latest code and relaunch:
 
-Download and install **Python 3.9 or later** from [python.org/downloads](https://www.python.org/downloads/).
+**Windows (Command Prompt):**
+```bat
+cd AI102Explorer
+git pull origin main
+.venv\Scripts\activate.bat
+streamlit run app.py
+```
 
-> **Windows:** During installation, tick **"Add Python to PATH"** before clicking Install.
+**PowerShell:**
+```powershell
+cd AI102Explorer
+git pull origin main
+.venv\Scripts\Activate.ps1
+streamlit run app.py
+```
+
+**macOS / Linux:**
+```bash
+cd AI102Explorer
+git pull origin main
+source .venv/bin/activate
+streamlit run app.py
+```
+
+Then open **http://localhost:8501** in your browser and click **🏆 Classroom Challenge** in the sidebar.
+
+> **If you downloaded a ZIP** (no Git): re-download the latest ZIP from [github.com/EricKart/AI102Explorer](https://github.com/EricKart/AI102Explorer), extract it into the same folder, and run `streamlit run app.py` from inside it.
 
 ---
 
-### Step 2 — Clone the Repository
+## First Time? Full Setup Steps
 
-Open a terminal (Command Prompt, PowerShell, or macOS/Linux Terminal) and run:
+### Step 1 — Install Git (if you haven't already)
+
+| OS | How |
+|---|---|
+| **Windows** | Download from [git-scm.com/download/win](https://git-scm.com/download/win). During install, keep all defaults. Then open a **new** Command Prompt window. |
+| **macOS** | Run `git --version` in Terminal. If not installed, macOS will prompt you to install Xcode Command Line Tools — click Install. |
+| **Ubuntu / Debian** | `sudo apt update && sudo apt install git` |
+
+---
+
+### Step 2 — Install Python 3.9 or later
+
+Download from [python.org/downloads](https://www.python.org/downloads/).
+
+> **Windows:** Tick **"Add Python to PATH"** during installation before clicking Install.
+
+> **macOS:** Python 3 is not pre-installed on recent macOS. Install via [python.org](https://www.python.org/downloads/) or `brew install python`.
+
+> **Ubuntu / Debian:** You need three packages: `sudo apt install python3 python3-venv python3-pip`
+> If you skip `python3-venv`, the setup script will fail with a venv error.
+
+---
+
+### Step 3 — Clone the Repository
+
+> ⚠️ **Windows:** Do **not** clone into a folder synced by **OneDrive** or **SharePoint**. OneDrive locks files during sync and breaks virtual environment creation. Use a plain local path like `C:\Projects` or your Desktop.
 
 ```bash
 git clone https://github.com/EricKart/AI102Explorer.git
 cd AI102Explorer
 ```
 
-> If you don't have Git: download the ZIP from [github.com/EricKart/AI102Explorer](https://github.com/EricKart/AI102Explorer) → click **Code → Download ZIP** → extract it.
+**No Git?** Click **Code → Download ZIP** on [github.com/EricKart/AI102Explorer](https://github.com/EricKart/AI102Explorer), extract it, and open a terminal inside the extracted folder.
 
 ---
 
-### Step 3 — Run the Setup Script
+### Step 4 — Run the Setup Script
+
+> The setup script creates the virtual environment, installs all dependencies, downloads NLTK language data, **and launches the app automatically at the end**. You do not need to run a separate launch command after this.
 
 **Windows (Command Prompt):**
 ```bat
 setup.bat
 ```
 
-> PowerShell users — run this first if you see a script error:
+> **PowerShell note:** If you see *"running scripts is disabled on this system"*, run this first:
 > ```powershell
 > Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 > ```
+> Then switch to **Command Prompt** and run `setup.bat` from there — it's simpler.
 
 **macOS / Linux:**
 ```bash
@@ -46,39 +98,40 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-The script creates a virtual environment, installs all dependencies, and downloads NLTK language data automatically.
-
----
-
-### Step 4 — Launch the App
-
-**Windows:**
-```bat
-.venv\Scripts\activate.bat
-streamlit run app.py
-```
-
-**PowerShell:**
-```powershell
-.venv\Scripts\Activate.ps1
-streamlit run app.py
-```
-
-**macOS / Linux:**
-```bash
-source .venv/bin/activate
-streamlit run app.py
-```
-
-Your browser will open automatically at **http://localhost:8501**.
-
-> If the browser doesn't open, paste `http://localhost:8501` into your browser manually.
+Your browser will open automatically at **http://localhost:8501** when setup finishes. If it doesn't, paste that URL into your browser manually.
 
 ---
 
 ### Step 5 — Open the Challenge Room
 
 In the left sidebar, scroll down and click **🏆 Classroom Challenge**.
+
+---
+
+## Relaunching in Future Sessions
+
+The next time you want to use the app, **do not re-run the setup script** — just activate the virtual environment and run Streamlit:
+
+**Windows (Command Prompt):**
+```bat
+cd AI102Explorer
+.venv\Scripts\activate.bat
+streamlit run app.py
+```
+
+**PowerShell:**
+```powershell
+cd AI102Explorer
+.venv\Scripts\Activate.ps1
+streamlit run app.py
+```
+
+**macOS / Linux:**
+```bash
+cd AI102Explorer
+source .venv/bin/activate
+streamlit run app.py
+```
 
 ---
 
@@ -170,14 +223,18 @@ Check the **🏆 Final Score** tab at any point to see your current total.
 
 | Problem | Fix |
 |---|---|
-| `python` not found (Windows) | Re-install Python and tick **Add to PATH** |
-| `python3` not found (macOS) | Run `brew install python` or download from python.org |
-| Script execution error (PowerShell) | Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` first |
-| `ModuleNotFoundError` | Make sure you activated the virtual environment (Step 4) before running streamlit |
+| `python` not found (Windows) | Re-install Python and tick **Add to PATH**. Open a **new** Command Prompt after installing. |
+| `python3` not found (macOS) | Download from python.org or run `brew install python` |
+| `python3-venv` missing (Ubuntu/Debian) | Run `sudo apt install python3-venv python3-pip` then retry setup |
+| *"running scripts is disabled"* (PowerShell) | Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` then use Command Prompt for `setup.bat` |
+| `ModuleNotFoundError: No module named 'streamlit'` | You ran streamlit without activating the venv. Activate first (see **Relaunching in Future Sessions** above). |
+| `ModuleNotFoundError: No module named 'matplotlib'` or similar | Re-run `pip install -r requirements.txt` with the venv active |
+| venv creation fails (Windows, OneDrive path) | Move the project folder out of OneDrive/SharePoint to a plain local path (e.g. `C:\Projects`) and retry |
+| `git` not found after installing (Windows) | Close and reopen your Command Prompt so the PATH update takes effect |
 | Port 8501 already in use | Run `streamlit run app.py --server.port 8502` and go to `http://localhost:8502` |
-| Browser doesn't open | Manually paste `http://localhost:8501` into your browser |
-| NLTK error at runtime | Run this command with the venv active: `python -c "import nltk; [nltk.download(p, quiet=True) for p in ['punkt','punkt_tab','averaged_perceptron_tagger','averaged_perceptron_tagger_eng','vader_lexicon','stopwords','maxent_ne_chunker','words']]"` |
-| Challenge scores reset on refresh | This is expected — Streamlit session state is local to your browser tab. Do not close or refresh the tab mid-challenge. |
+| Browser doesn't open automatically | Manually paste `http://localhost:8501` into your browser |
+| NLTK error at runtime | With venv active, run: `python -c "import nltk; [nltk.download(p, quiet=True) for p in ['punkt','punkt_tab','averaged_perceptron_tagger','averaged_perceptron_tagger_eng','vader_lexicon','stopwords','maxent_ne_chunker','words']]"` |
+| Challenge scores reset on refresh | Expected — Streamlit session state is local to your browser tab. Do **not** close or refresh the tab mid-challenge. |
 
 ---
 
@@ -188,6 +245,7 @@ Check the **🏆 Final Score** tab at any point to see your current total.
 - **Round 3 explanations** call out exactly which deprecated services appear in wrong answers — useful discussion anchor
 - **Speed Quiz** creates natural competitive pressure; announcing the top speed bonus scores to the class works well as an icebreaker
 - **Reset button** on the Final Score tab lets students retry the full challenge if time allows
+- **Common Windows issue:** students who cloned into an OneDrive folder — have them move the folder to `C:\Projects` or Desktop and re-run `setup.bat`
 
 ---
 
