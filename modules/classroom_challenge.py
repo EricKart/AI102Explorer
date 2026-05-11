@@ -609,98 +609,211 @@ SPEED_QUESTIONS = [
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# DATA — Round 5: Myth Busters (True / False)
+# DATA — Round 5: Azure AI Gauntlet  (type: "tf" | "mcq")
 # ═══════════════════════════════════════════════════════════════════════════════
 
-MYTHS = [
+GAUNTLET_QUESTIONS = [
+    # ── 1. T/F ─────────────────────────────────────────────────────────────────
     {
+        "type": "tf",
+        "domain": "AI Language",
         "statement": (
-            "LUIS (Language Understanding Intelligent Service) is Microsoft's current "
-            "recommended service for building intent-based conversational AI."
+            "Azure AI Language's Conversational Language Understanding (CLU) can "
+            "recognise multiple intents from a single user utterance in one API call."
         ),
         "answer": False,
         "explanation": (
-            "LUIS is <strong>deprecated</strong>. It has been replaced by Conversational Language "
-            "Understanding (CLU) within Azure AI Language. All new conversational AI projects "
-            "should use CLU."
+            "CLU returns <strong>one top-scoring intent</strong> per utterance. If your scenario "
+            "genuinely requires multi-intent detection, you must split the utterance or redesign "
+            "your dialog flow. LUIS had the same limitation — it did not go away when CLU replaced it."
         ),
     },
+    # ── 2. MCQ ─────────────────────────────────────────────────────────────────
     {
-        "statement": "Azure AI Content Safety can analyse both text and images for harmful content.",
+        "type": "mcq",
+        "domain": "Document Intelligence",
+        "question": (
+            "A developer must extract structured fields — vendor name, total amount, "
+            "and line items — from thousands of scanned invoices with no model training. "
+            "Which Azure service and feature is the PRIMARY fit?"
+        ),
+        "options": [
+            "Azure AI Vision — Read API (OCR)",
+            "Azure Document Intelligence — prebuilt Invoice model",
+            "Azure AI Language — Named Entity Recognition",
+            "Azure AI Search — document cracking pipeline",
+        ],
+        "answer": 1,
+        "explanation": (
+            "The <strong>Document Intelligence prebuilt Invoice model</strong> understands invoice "
+            "structure out of the box — vendor, amount due, tax, line items, dates — with no training. "
+            "The Read API just returns raw text without structure. NER identifies entity types "
+            "in free text. AI Search document cracking extracts text for indexing, not for "
+            "structured field extraction."
+        ),
+    },
+    # ── 3. T/F ─────────────────────────────────────────────────────────────────
+    {
+        "type": "tf",
+        "domain": "AI Speech",
+        "statement": (
+            "Custom Neural Voice (CNV) requires at least 100 hours of recorded studio-quality "
+            "audio to train a usable voice model."
+        ),
+        "answer": False,
+        "explanation": (
+            "CNV can produce a high-quality voice with as little as <strong>~2 hours</strong> of "
+            "clean, studio-recorded audio (approximately 2,000 sentences). 100 hours is not a "
+            "requirement — that figure is closer to what older concatenative TTS systems needed. "
+            "CNV uses deep neural nets to generalise from a much smaller dataset."
+        ),
+    },
+    # ── 4. MCQ ─────────────────────────────────────────────────────────────────
+    {
+        "type": "mcq",
+        "domain": "AI Vision",
+        "question": (
+            "Which Azure AI Vision 4.0 feature returns a single natural-language sentence "
+            "describing the overall content of an image — for example, "
+            "'A brown dog running through a field of grass'?"
+        ),
+        "options": [
+            "Image tagging",
+            "Object detection",
+            "Image captioning (Caption / Dense Captions)",
+            "Smart crop",
+        ],
+        "answer": 2,
+        "explanation": (
+            "<strong>Image captioning</strong> (the Caption and Dense Captions features in AI Vision 4.0) "
+            "produces natural-language descriptions of an image. "
+            "Tagging returns a list of individual keyword labels. "
+            "Object detection returns bounding boxes with class labels. "
+            "Smart crop identifies the best region for a thumbnail — it produces no text."
+        ),
+    },
+    # ── 5. T/F ─────────────────────────────────────────────────────────────────
+    {
+        "type": "tf",
+        "domain": "Generative AI",
+        "statement": (
+            "The Azure OpenAI <code>max_tokens</code> parameter caps the number of tokens "
+            "in the model's response only — it does not count tokens in the prompt."
+        ),
         "answer": True,
         "explanation": (
-            "Azure AI Content Safety is multimodal — it returns severity scores for hate, violence, "
-            "sexual content, and self-harm for both text and image inputs in a single unified API."
+            "<code>max_tokens</code> limits the <strong>completion (output) tokens</strong>. "
+            "The prompt tokens are counted separately against the model's total context window. "
+            "If your prompt is 3,000 tokens and you set max_tokens to 2,000, the model will try "
+            "to generate up to 2,000 tokens — but may be capped by the context window limit, "
+            "which is prompt + completion combined."
         ),
     },
+    # ── 6. MCQ ─────────────────────────────────────────────────────────────────
     {
-        "statement": (
-            "Azure Document Intelligence can only process PDF files — "
-            "it cannot analyse JPEG or PNG images."
+        "type": "mcq",
+        "domain": "Knowledge Mining",
+        "question": (
+            "You are adding vector search to an Azure AI Search index so that queries "
+            "match documents by semantic meaning rather than exact keywords. "
+            "What must you configure in the index schema?"
         ),
-        "answer": False,
+        "options": [
+            "A scoring profile with freshness and tag boosts",
+            "A semantic configuration with a title field",
+            "A vector field using the HNSW algorithm",
+            "A synonym map linked to the query analyser",
+        ],
+        "answer": 2,
         "explanation": (
-            "Document Intelligence supports PDF, JPEG, PNG, BMP, TIFF, and HEIF. "
-            "You can pass a file URL, base64-encoded content, or a raw file stream regardless of format."
+            "Vector search requires a <strong>vector field configured with the HNSW "
+            "(Hierarchical Navigable Small World) algorithm</strong> — this stores the embedding "
+            "and enables approximate nearest-neighbour retrieval. "
+            "A semantic configuration enables Microsoft's semantic re-ranking of keyword results "
+            "but does NOT add vector search. Scoring profiles adjust ranking weights. "
+            "Synonym maps expand keyword queries."
         ),
     },
+    # ── 7. T/F ─────────────────────────────────────────────────────────────────
     {
+        "type": "tf",
+        "domain": "AI Language",
         "statement": (
-            "In a RAG pipeline, the language model's weights are updated each time "
-            "it retrieves and processes new documents."
-        ),
-        "answer": False,
-        "explanation": (
-            "RAG does <strong>not</strong> update model weights. It retrieves relevant documents "
-            "and injects them as context into the prompt at inference time. Weight updates only "
-            "happen during fine-tuning, which is a separate and expensive training process."
-        ),
-    },
-    {
-        "statement": (
-            "A single Azure AI Services multi-service resource provides one endpoint and one key "
-            "to access Azure AI Vision, Language, Speech, and Translator."
+            "Azure AI Language's Text Analytics for Health (TA4H) is generally available "
+            "and can be used without submitting a special access request."
         ),
         "answer": True,
         "explanation": (
-            "An Azure AI Services multi-service resource gives you a unified key and endpoint that "
-            "grants access to all supported services, simplifying configuration, secret management, "
-            "and billing consolidation."
+            "TA4H is <strong>generally available (GA)</strong> and requires no access application. "
+            "Some other Azure AI features (such as certain Azure OpenAI models or Custom Neural "
+            "Voice for specific use cases) do require responsible-AI access requests — but TA4H "
+            "is not one of them."
         ),
     },
+    # ── 8. MCQ ─────────────────────────────────────────────────────────────────
     {
+        "type": "mcq",
+        "domain": "Security & Identity",
+        "question": (
+            "An Azure App Service uses a system-assigned Managed Identity to call Azure AI "
+            "Services. The calls are returning 401 Unauthorized. "
+            "What is the MOST LIKELY missing step?"
+        ),
+        "options": [
+            "The App Service must have its identity enabled under Settings → Identity",
+            "The Managed Identity must be granted a role on the Azure AI Services resource via RBAC",
+            "An app registration must be created in Azure AD for the App Service",
+            "The Azure AI Services firewall must whitelist the App Service outbound IP",
+        ],
+        "answer": 1,
+        "explanation": (
+            "Enabling the Managed Identity is a prerequisite, but it alone does not grant access. "
+            "You must also <strong>assign an RBAC role</strong> (e.g., "
+            "<em>Cognitive Services User</em>) to the Managed Identity on the Azure AI Services "
+            "resource. Without that role assignment, Azure AD returns a token but the AI Services "
+            "resource rejects it with 401 because no permission has been granted."
+        ),
+    },
+    # ── 9. T/F ─────────────────────────────────────────────────────────────────
+    {
+        "type": "tf",
+        "domain": "AI Vision",
         "statement": (
-            "Azure AI Vision and Azure Custom Vision are the same service — "
-            "Custom Vision is simply an advanced tier of Azure AI Vision."
+            "Azure Custom Vision and Azure AI Vision share the same API endpoint and key "
+            "when both are provisioned under the same Azure AI Services multi-service resource."
         ),
         "answer": False,
         "explanation": (
-            "These are distinct services. Azure AI Vision uses Microsoft's prebuilt Florence models "
-            "for general image analysis (tagging, OCR, captions, object detection). Custom Vision "
-            "lets you train your own classifiers and object detectors on your own labelled images."
+            "Custom Vision is a <strong>separate resource type</strong> "
+            "(<em>CustomVision.Training</em> / <em>CustomVision.Prediction</em>). "
+            "It cannot be included in a multi-service Azure AI Services resource — it always gets "
+            "its own dedicated endpoint and key. This is a common exam trap: multi-service "
+            "covers Vision, Language, Speech, and Translator, but NOT Custom Vision."
         ),
     },
+    # ── 10. MCQ ────────────────────────────────────────────────────────────────
     {
-        "statement": (
-            "Using Managed Identity to authenticate to Azure AI Services means no API keys "
-            "or passwords need to appear in application code or configuration files."
+        "type": "mcq",
+        "domain": "AI Speech",
+        "question": (
+            "An application must display a live transcript with precise word-level timestamps "
+            "(start time and duration per word) using the Azure AI Speech SDK. "
+            "Which approach achieves this?"
         ),
-        "answer": True,
+        "options": [
+            "SpeechSynthesizer with a word-boundary event handler",
+            "SpeechRecognizer with OutputFormat.Detailed and a word-timing result",
+            "ConversationTranscriber with speaker diarization enabled",
+            "TranslationRecognizer with target-language phoneme output",
+        ],
+        "answer": 1,
         "explanation": (
-            "Managed Identity authenticates the hosting resource (App Service, Function App, VM) "
-            "directly to Azure AD. The token exchange is automatic — no keys, passwords, or "
-            "connection strings appear in code."
-        ),
-    },
-    {
-        "statement": (
-            "QnA Maker is Microsoft's current recommended service for building "
-            "custom question-and-answer knowledge bases on Azure."
-        ),
-        "answer": False,
-        "explanation": (
-            "QnA Maker was <strong>retired</strong> and replaced by the Custom Question Answering "
-            "feature within Azure AI Language. All new Q&amp;A projects should use Azure AI Language."
+            "<strong>SpeechRecognizer configured with <code>OutputFormat.Detailed</code></strong> "
+            "returns a JSON result that includes per-word offset (start time in 100-ns ticks) and "
+            "duration — giving precise word-level timestamps. "
+            "SpeechSynthesizer with word-boundary events covers TTS (output), not recognition. "
+            "ConversationTranscriber is for multi-speaker diarization. "
+            "TranslationRecognizer translates speech to another language — not what's needed here."
         ),
     },
 ]
@@ -731,6 +844,10 @@ def _init():
         "cc_quiz_submitted_flags": {},
         "cc_quiz_score": 0,
         # Round 5
+        "cc_myth_index": 0,
+        "cc_myth_answered": False,
+        "cc_myth_streak": 0,
+        "cc_myth_max_streak": 0,
         "cc_myth_submitted": False,
         "cc_myth_score": 0,
         "cc_myth_results": [],        # list of {"chosen", "is_correct"}
@@ -1167,96 +1284,189 @@ def _round4():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ROUND 5 — Myth Busters (True / False)
+# ROUND 5 — Azure AI Gauntlet  (one question at a time, instant feedback)
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _process_gauntlet_answer(idx: int, chosen, q: dict) -> None:
+    """Record answer, update streak, rerun."""
+    is_correct = chosen == q["answer"]
+    if is_correct:
+        st.session_state.cc_myth_score += 12
+        st.session_state.cc_myth_streak += 1
+        st.session_state.cc_myth_max_streak = max(
+            st.session_state.cc_myth_max_streak,
+            st.session_state.cc_myth_streak,
+        )
+    else:
+        st.session_state.cc_myth_streak = 0
+    st.session_state.cc_myth_results.append({"chosen": chosen, "is_correct": is_correct})
+    st.session_state.cc_myth_answered = True
+    st.rerun()
+
+
 def _round5():
-    st.markdown("### 💥 Round 5: Myth Busters")
+    st.markdown("### ⚡ Round 5: Azure AI Gauntlet")
     st.markdown(
-        "8 Azure AI statements — decide if each is **True** or **False**. "
-        "These are based on real misconceptions that trip up exam candidates. **15 points per correct answer.**"
+        "10 questions, **one at a time** — answer and get instant feedback with a full explanation. "
+        "Mix of True / False and multiple-choice. Exam-level traps included. "
+        "**12 points per correct answer.**"
     )
     st.markdown(
         '<div class="info-box">🏆 <strong>Maximum: 120 points</strong> &nbsp;|&nbsp; '
-        "8 statements × 15 pts each</div>",
+        "10 questions × 12 pts &nbsp;|&nbsp; 🔥 Build a streak for bragging rights!</div>",
         unsafe_allow_html=True,
     )
 
+    # ── Results view ──────────────────────────────────────────────────────────
     if st.session_state.cc_myth_submitted:
         score = st.session_state.cc_myth_score
+        max_streak = st.session_state.cc_myth_max_streak
+        correct = sum(1 for r in st.session_state.cc_myth_results if r["is_correct"])
+
         if score == 120:
-            st.success(f"All 8 myths busted! {score}/120 — Flawless Azure AI knowledge. 💥")
-        elif score >= 75:
-            st.info(f"Score: {score}/120 — Good instincts! Review the ones you missed below.")
+            st.success(f"Perfect 10/10! {score}/120 — Unbeatable Azure AI knowledge. 💥")
+        elif correct >= 8:
+            st.info(f"{correct}/10 correct — {score}/120 pts. Strong performance! Study the ones you missed.")
         else:
-            st.warning(f"Score: {score}/120 — Some tricky ones in there! Study the explanations.")
+            st.warning(f"{correct}/10 correct — {score}/120 pts. These are tricky exam traps — review the explanations below.")
+
+        if max_streak >= 7:
+            st.success(f"🔥 Legendary streak: **{max_streak} in a row!**")
+        elif max_streak >= 5:
+            st.success(f"🔥 Hot streak: **{max_streak} in a row!**")
+        elif max_streak >= 3:
+            st.info(f"🔥 Best streak: **{max_streak} in a row**")
 
         st.markdown("---")
-        for i, (myth, result) in enumerate(zip(MYTHS, st.session_state.cc_myth_results)):
+        for i, (q, result) in enumerate(zip(GAUNTLET_QUESTIONS, st.session_state.cc_myth_results)):
             icon = "✅" if result["is_correct"] else "❌"
-            correct_label = "TRUE" if myth["answer"] else "FALSE"
-            chosen_label = "TRUE" if result["chosen"] else "FALSE"
+            if q["type"] == "tf":
+                chosen_label = "TRUE" if result["chosen"] else "FALSE"
+                correct_label = "TRUE" if q["answer"] else "FALSE"
+                text = q["statement"]
+            else:
+                chosen_label = q["options"][result["chosen"]]
+                correct_label = q["options"][q["answer"]]
+                text = q["question"]
+            badge = f'<span style="font-size:0.75em;background:#e8f4fd;padding:2px 6px;border-radius:4px;color:#1a73e8">{q["domain"]}</span>'
             with st.container():
-                st.markdown(f"**{icon} Statement {i + 1}:** _{myth['statement']}_")
-                if result["is_correct"]:
-                    st.markdown(f"&nbsp;&nbsp;&nbsp;Your answer: **{chosen_label}** ✓")
-                else:
-                    st.markdown(
-                        f"&nbsp;&nbsp;&nbsp;Your answer: ~~{chosen_label}~~ — "
-                        f"Correct answer: **{correct_label}**"
-                    )
                 st.markdown(
-                    f'<div class="concept-box">{myth["explanation"]}</div>',
+                    f"**{icon} Q{i + 1}** {badge}<br>_{text}_",
+                    unsafe_allow_html=True,
+                )
+                if result["is_correct"]:
+                    st.markdown(f"&nbsp;&nbsp;&nbsp;✓ **{chosen_label}**")
+                else:
+                    st.markdown(f"&nbsp;&nbsp;&nbsp;~~{chosen_label}~~ → Correct: **{correct_label}**")
+                st.markdown(
+                    f'<div class="concept-box"><strong>💡</strong> {q["explanation"]}</div>',
                     unsafe_allow_html=True,
                 )
                 st.markdown("")
         return
 
-    # ── Active form ────────────────────────────────────────────────────────────
-    with st.form("cc_round5_form"):
-        for i, myth in enumerate(MYTHS):
-            st.markdown(
-                f'<div class="module-card"><strong>Statement {i + 1}:</strong> {myth["statement"]}</div>',
-                unsafe_allow_html=True,
-            )
-            st.radio(
-                f"True or False for Statement {i + 1}",
-                options=[True, False],
-                format_func=lambda x: "✅  True" if x else "❌  False",
-                key=f"cc_myth_sel_{i}",
-                index=None,
-                horizontal=True,
-                label_visibility="collapsed",
-            )
-            st.markdown("")
+    # ── Active question ───────────────────────────────────────────────────────
+    idx = st.session_state.cc_myth_index
+    q = GAUNTLET_QUESTIONS[idx]
+    streak = st.session_state.cc_myth_streak
 
-        submitted = st.form_submit_button(
-            "Submit Round 5 →", type="primary", use_container_width=True
+    # Progress
+    st.progress(idx / len(GAUNTLET_QUESTIONS), text=f"Question {idx + 1} of {len(GAUNTLET_QUESTIONS)}")
+
+    # Streak badge
+    if streak >= 3:
+        st.markdown(f"🔥 **{streak} in a row!** Stay sharp!")
+    elif streak == 2:
+        st.markdown("🔥 2 in a row — one more starts your streak!")
+
+    domain_badge = (
+        f'<span style="font-size:0.8em;background:#e8f4fd;padding:3px 8px;'
+        f'border-radius:4px;color:#1a73e8"><strong>{q["domain"]}</strong></span>'
+    )
+    st.markdown(f"&nbsp;{domain_badge}", unsafe_allow_html=True)
+    st.markdown("")
+
+    # Question card
+    if q["type"] == "tf":
+        st.markdown(
+            f'<div class="module-card"><strong>True or False?</strong><br><br>'
+            f'{q["statement"]}</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            f'<div class="module-card">{q["question"]}</div>',
+            unsafe_allow_html=True,
         )
 
-    if submitted:
-        results = []
-        score = 0
-        missing = []
-        for i, myth in enumerate(MYTHS):
-            chosen = st.session_state.get(f"cc_myth_sel_{i}")
-            if chosen is None:
-                missing.append(i + 1)
-                continue
-            is_correct = chosen == myth["answer"]
-            if is_correct:
-                score += 15
-            results.append({"chosen": chosen, "is_correct": is_correct})
+    st.markdown("")
 
-        if missing:
-            st.warning(
-                f"Please answer Statement(s): {', '.join(str(m) for m in missing)} before submitting."
-            )
+    # Feedback or input
+    if st.session_state.cc_myth_answered:
+        result = st.session_state.cc_myth_results[-1]
+        chosen = result["chosen"]
+        is_correct = result["is_correct"]
+
+        if q["type"] == "tf":
+            chosen_label = "TRUE" if chosen else "FALSE"
+            correct_label = "TRUE" if q["answer"] else "FALSE"
         else:
-            st.session_state.cc_myth_results = results
-            st.session_state.cc_myth_score = score
-            st.session_state.cc_myth_submitted = True
+            chosen_label = q["options"][chosen]
+            correct_label = q["options"][q["answer"]]
+
+        if is_correct:
+            st.success(f"✅ Correct! **{chosen_label}**")
+        else:
+            st.error(f"❌ You said: ~~{chosen_label}~~  |  Correct: **{correct_label}**")
+
+        st.markdown(
+            f'<div class="concept-box"><strong>💡 Explanation:</strong> {q["explanation"]}</div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown("")
+
+        is_last = idx >= len(GAUNTLET_QUESTIONS) - 1
+        btn_label = "🏆 See My Final Results →" if is_last else f"Next Question → (Q{idx + 2} of {len(GAUNTLET_QUESTIONS)})"
+        if st.button(btn_label, type="primary", use_container_width=True):
+            st.session_state.cc_myth_answered = False
+            if is_last:
+                st.session_state.cc_myth_submitted = True
+            else:
+                st.session_state.cc_myth_index += 1
             st.rerun()
+
+    else:
+        if q["type"] == "tf":
+            with st.form(f"cc_gauntlet_form_{idx}"):
+                choice = st.radio(
+                    "Your answer:",
+                    options=[True, False],
+                    format_func=lambda x: "✅  True" if x else "❌  False",
+                    index=None,
+                    horizontal=True,
+                    label_visibility="collapsed",
+                )
+                submitted = st.form_submit_button("Submit Answer →", type="primary", use_container_width=True)
+            if submitted:
+                if choice is None:
+                    st.warning("Please select True or False before submitting.")
+                else:
+                    _process_gauntlet_answer(idx, choice, q)
+        else:
+            with st.form(f"cc_gauntlet_form_{idx}"):
+                choice_idx = st.radio(
+                    "Your answer:",
+                    options=list(range(len(q["options"]))),
+                    format_func=lambda i, opts=q["options"]: f"{['A','B','C','D'][i]}.  {opts[i]}",
+                    index=None,
+                    label_visibility="collapsed",
+                )
+                submitted = st.form_submit_button("Submit Answer →", type="primary", use_container_width=True)
+            if submitted:
+                if choice_idx is None:
+                    st.warning("Please select an answer before submitting.")
+                else:
+                    _process_gauntlet_answer(idx, choice_idx, q)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1320,7 +1530,7 @@ def _final_score():
             ),
         },
         {
-            "Round": "💥 Round 5: Myth Busters",
+            "Round": "⚡ Round 5: Azure AI Gauntlet",
             "Score": st.session_state.cc_myth_score,
             "Max": 120,
             "Status": "✅ Submitted" if st.session_state.cc_myth_submitted else "⬜ Not yet submitted",
@@ -1449,12 +1659,12 @@ def show():
     col2.metric("Round 2", "80 pts", "Spot the Bug")
     col3.metric("Round 3", "90 pts", "Architect")
     col4.metric("Round 4", "300 pts", "Speed Quiz")
-    col5.metric("Round 5", "120 pts", "Myth Busters")
+    col5.metric("Round 5", "120 pts", "Azure AI Gauntlet")
 
     st.markdown(
         '<div class="info-box">'
         "<strong>How to play:</strong> Complete all five rounds in any order. "
-        "Each round tests a different skill — service knowledge, debugging, architecture, speed, and myth-busting. "
+        "Each round tests a different skill — service knowledge, debugging, architecture, speed, and exam-level Azure AI challenges. "
         "Your score accumulates automatically. Head to the 🏆 Final Score tab at any time to check your standing.<br><br>"
         "<strong>Badge thresholds:</strong> "
         "🔵 Apprentice (0–250) &nbsp;|&nbsp; "
@@ -1472,7 +1682,7 @@ def show():
         "🐛 Round 2: Spot the Bug",
         "🏗️ Round 3: Architect",
         "⚡ Round 4: Speed Quiz",
-        "💥 Round 5: Myth Busters",
+        "⚡ Round 5: Azure AI Gauntlet",
         "🏆 Final Score",
     ])
 

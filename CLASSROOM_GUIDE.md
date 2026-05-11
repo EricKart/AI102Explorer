@@ -188,7 +188,7 @@ streamlit run app.py
 | 🐛 Spot the Bug | 80 |
 | 🏗️ Architect | 90 |
 | ⚡ Speed Quiz | 300 |
-| 💥 Myth Busters | 120 |
+| ⚡ Azure AI Gauntlet | 120 |
 | **Total** | **670** |
 
 ### Badges

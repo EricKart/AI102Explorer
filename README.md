@@ -21,7 +21,7 @@ No Azure subscription or API key required - everything runs **100% locally** usi
 | **Knowledge Mining** | Full-text Search, Vector Search, Facets, Word Cloud |
 | **Generative AI** | Prompt Engineering, RAG Simulation, Text Generation, Token Analysis |
 | **Practice Quiz** | 25 questions across all 5 domains with explanations and scoring |
-| **Classroom Challenge** | 5-round gamified activity: Service Matcher, Spot the Bug, Architect, Speed Quiz Blitz, Myth Busters |
+| **Classroom Challenge** | 5-round gamified activity: Service Matcher, Spot the Bug, Architect, Speed Quiz Blitz, Azure AI Gauntlet |
 
 ---
 
@@ -171,7 +171,7 @@ AI102Explorer/
 ## Classroom Activity
 
 The **AI Engineer Challenge Room** is a 5-round in-class activity designed for 45-60 minutes.
-Rounds: 🎯 Service Matcher · 🐛 Spot the Bug · 🏗️ Architect · ⚡ Speed Quiz · 💥 Myth Busters  
+Rounds: 🎯 Service Matcher · 🐛 Spot the Bug · 🏗️ Architect · ⚡ Speed Quiz · ⚡ Azure AI Gauntlet  
 Max score: **670 pts** — badges from Apprentice up to Champion.  
 See [CLASSROOM_GUIDE.md](CLASSROOM_GUIDE.md) for full setup instructions, round descriptions, and scoring details.
 
