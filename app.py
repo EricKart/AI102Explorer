@@ -96,6 +96,7 @@ with st.sidebar:
             "🔍 Knowledge Mining",
             "✨ Generative AI",
             "🎯 Quiz — Test Yourself",
+            "🏆 Classroom Challenge",
         ],
     )
 
@@ -121,6 +122,15 @@ with st.sidebar:
 
     if st.session_state.quiz_completed:
         st.markdown(f"🎯 Quiz: **{st.session_state.quiz_score}/25**")
+
+    if st.session_state.get("cc_initialized"):
+        cc_total = (
+            st.session_state.get("cc_rm_score", 0)
+            + st.session_state.get("cc_bug_score", 0)
+            + st.session_state.get("cc_arch_score", 0)
+            + st.session_state.get("cc_quiz_score", 0)
+        )
+        st.markdown(f"⚡ Challenge: **{cc_total} pts**")
 
     st.markdown("---")
     st.markdown("### 🔗 Useful Links")
@@ -152,5 +162,7 @@ elif page == "✨ Generative AI":
     st.session_state.completed_modules.add("Generative AI")
 elif page == "🎯 Quiz — Test Yourself":
     from modules.quiz import show
+elif page == "🏆 Classroom Challenge":
+    from modules.classroom_challenge import show
 
 show()

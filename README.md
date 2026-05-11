@@ -21,6 +21,7 @@ No Azure subscription or API key required - everything runs **100% locally** usi
 | **Knowledge Mining** | Full-text Search, Vector Search, Facets, Word Cloud |
 | **Generative AI** | Prompt Engineering, RAG Simulation, Text Generation, Token Analysis |
 | **Practice Quiz** | 25 questions across all 5 domains with explanations and scoring |
+| **Classroom Challenge** | 4-round gamified activity: Service Matcher, Spot the Bug, Architect, Speed Quiz Blitz |
 
 ---
 
@@ -136,6 +137,7 @@ AI102Explorer/
   - knowledge_mining.py          Knowledge Mining module
   - generative_ai.py             Generative AI module
   - quiz.py                      25-question practice quiz
+  - classroom_challenge.py       4-round in-class gamified activity
 ```
 
 ---
@@ -163,6 +165,13 @@ AI102Explorer/
 | Script execution error (PowerShell) | Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` |
 | Port 8501 already in use | Run `streamlit run app.py --server.port 8502` |
 | NLTK error at runtime | Re-run the NLTK download command from step 5 |
+
+---
+
+## Classroom Activity
+
+The **AI Engineer Challenge Room** is a 4-round in-class activity designed for 30-45 minutes.
+See [CLASSROOM_GUIDE.md](CLASSROOM_GUIDE.md) for full setup instructions, round descriptions, and scoring details.
 
 ---
 
