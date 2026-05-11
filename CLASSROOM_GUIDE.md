@@ -188,26 +188,27 @@ streamlit run app.py
 | 🐛 Spot the Bug | 80 |
 | 🏗️ Architect | 90 |
 | ⚡ Speed Quiz | 300 |
-| **Total** | **550** |
+| 💥 Myth Busters | 120 |
+| **Total** | **670** |
 
 ### Badges
 
 | Badge | Score Range |
 |---|---|
-| 🔵 Apprentice | 0–200 |
-| 🟡 Associate | 201–350 |
-| 🟢 Expert | 351–450 |
-| 🏆 Champion | 451–550 |
+| 🔵 Apprentice | 0–250 |
+| 🟡 Associate | 251–430 |
+| 🟢 Expert | 431–560 |
+| 🏆 Champion | 561–670 |
 
 ---
 
 ## Sharing Your Score
 
-When you finish all four rounds, go to the **🏆 Final Score** tab.  
+When you finish all five rounds, go to the **🏆 Final Score** tab.  
 Copy the score line shown there and paste it into the class chat — for example:
 
 ```
-AI-102 Challenge Room | 🟢 Expert | Total: 392/550 | R1 (Matcher): 70/80 | R2 (Bugs): 60/80 | R3 (Architect): 60/90 | R4 (Speed): 202/300
+AI-102 Challenge Room | 🟢 Expert | Total: 472/670 | R1 (Matcher): 70/80 | R2 (Bugs): 60/80 | R3 (Architect): 60/90 | R4 (Speed): 207/300 | R5 (Myths): 75/120
 ```
 
 ---

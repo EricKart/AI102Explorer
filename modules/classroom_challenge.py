@@ -23,6 +23,18 @@ SERVICE_OPTIONS = [
     "Azure AI Translator",
 ]
 
+# One hint per scenario — shown in a collapsible expander so students can try first.
+SCENARIO_HINTS = [
+    "Which service has a prebuilt-invoice model that extracts structured fields with zero custom training?",
+    "This is about WHO is speaking, not WHAT they say. Look for a speaker verification / identification feature.",
+    "The keywords are 'detect and redact PHI'. Which NLP service has a Text Analytics for Health variant?",
+    "Which service was built specifically for detecting hate, violence, sexual content, and self-harm?",
+    "Your defect categories aren't in any standard catalogue — you need to train on your own labelled images.",
+    "Which service supports hybrid search — keyword + vector/semantic — with a semantic ranker at scale?",
+    "The clue is 'centralise secret storage' and 'automatic rotation without redeployment'.",
+    "Which service handles neural machine translation for 100+ languages in a single REST call?",
+]
+
 SCENARIOS = [
     {
         "scenario": (
@@ -597,6 +609,103 @@ SPEED_QUESTIONS = [
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# DATA — Round 5: Myth Busters (True / False)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+MYTHS = [
+    {
+        "statement": (
+            "LUIS (Language Understanding Intelligent Service) is Microsoft's current "
+            "recommended service for building intent-based conversational AI."
+        ),
+        "answer": False,
+        "explanation": (
+            "LUIS is <strong>deprecated</strong>. It has been replaced by Conversational Language "
+            "Understanding (CLU) within Azure AI Language. All new conversational AI projects "
+            "should use CLU."
+        ),
+    },
+    {
+        "statement": "Azure AI Content Safety can analyse both text and images for harmful content.",
+        "answer": True,
+        "explanation": (
+            "Azure AI Content Safety is multimodal — it returns severity scores for hate, violence, "
+            "sexual content, and self-harm for both text and image inputs in a single unified API."
+        ),
+    },
+    {
+        "statement": (
+            "Azure Document Intelligence can only process PDF files — "
+            "it cannot analyse JPEG or PNG images."
+        ),
+        "answer": False,
+        "explanation": (
+            "Document Intelligence supports PDF, JPEG, PNG, BMP, TIFF, and HEIF. "
+            "You can pass a file URL, base64-encoded content, or a raw file stream regardless of format."
+        ),
+    },
+    {
+        "statement": (
+            "In a RAG pipeline, the language model's weights are updated each time "
+            "it retrieves and processes new documents."
+        ),
+        "answer": False,
+        "explanation": (
+            "RAG does <strong>not</strong> update model weights. It retrieves relevant documents "
+            "and injects them as context into the prompt at inference time. Weight updates only "
+            "happen during fine-tuning, which is a separate and expensive training process."
+        ),
+    },
+    {
+        "statement": (
+            "A single Azure AI Services multi-service resource provides one endpoint and one key "
+            "to access Azure AI Vision, Language, Speech, and Translator."
+        ),
+        "answer": True,
+        "explanation": (
+            "An Azure AI Services multi-service resource gives you a unified key and endpoint that "
+            "grants access to all supported services, simplifying configuration, secret management, "
+            "and billing consolidation."
+        ),
+    },
+    {
+        "statement": (
+            "Azure AI Vision and Azure Custom Vision are the same service — "
+            "Custom Vision is simply an advanced tier of Azure AI Vision."
+        ),
+        "answer": False,
+        "explanation": (
+            "These are distinct services. Azure AI Vision uses Microsoft's prebuilt Florence models "
+            "for general image analysis (tagging, OCR, captions, object detection). Custom Vision "
+            "lets you train your own classifiers and object detectors on your own labelled images."
+        ),
+    },
+    {
+        "statement": (
+            "Using Managed Identity to authenticate to Azure AI Services means no API keys "
+            "or passwords need to appear in application code or configuration files."
+        ),
+        "answer": True,
+        "explanation": (
+            "Managed Identity authenticates the hosting resource (App Service, Function App, VM) "
+            "directly to Azure AD. The token exchange is automatic — no keys, passwords, or "
+            "connection strings appear in code."
+        ),
+    },
+    {
+        "statement": (
+            "QnA Maker is Microsoft's current recommended service for building "
+            "custom question-and-answer knowledge bases on Azure."
+        ),
+        "answer": False,
+        "explanation": (
+            "QnA Maker was <strong>retired</strong> and replaced by the Custom Question Answering "
+            "feature within Azure AI Language. All new Q&amp;A projects should use Azure AI Language."
+        ),
+    },
+]
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # SESSION STATE
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -621,6 +730,10 @@ def _init():
         "cc_quiz_start_times": {},    # idx -> float
         "cc_quiz_submitted_flags": {},
         "cc_quiz_score": 0,
+        # Round 5
+        "cc_myth_submitted": False,
+        "cc_myth_score": 0,
+        "cc_myth_results": [],        # list of {"chosen", "is_correct"}
         # Final
         "cc_balloons_shown": False,
     }
@@ -635,15 +748,16 @@ def _total_score():
         + st.session_state.cc_bug_score
         + st.session_state.cc_arch_score
         + st.session_state.cc_quiz_score
+        + st.session_state.cc_myth_score
     )
 
 
 def _badge(score):
-    if score >= 451:
+    if score >= 561:
         return "🏆 Champion"
-    elif score >= 351:
+    elif score >= 431:
         return "🟢 Expert"
-    elif score >= 201:
+    elif score >= 251:
         return "🟡 Associate"
     else:
         return "🔵 Apprentice"
@@ -709,6 +823,8 @@ def _round1():
                 key=f"cc_rm_sel_{i}",
                 label_visibility="collapsed",
             )
+            with st.expander("💡 Stuck? Get a hint"):
+                st.caption(SCENARIO_HINTS[i])
             st.markdown("")
 
         submitted = st.form_submit_button(
@@ -985,6 +1101,15 @@ def _round4():
     already_submitted = idx in st.session_state.cc_quiz_submitted_flags
 
     if not already_submitted:
+        elapsed_now = time.time() - st.session_state.cc_quiz_start_times[idx]
+        if elapsed_now < 10:
+            st.markdown(f"⚡ **{elapsed_now:.0f}s** — 🟢 +10 bonus zone! Submit fast!")
+        elif elapsed_now < 15:
+            st.markdown(f"⏱️ **{elapsed_now:.0f}s** — 🟡 Hurry! +10 bonus expires in {max(0, 15 - elapsed_now):.0f}s")
+        elif elapsed_now < 30:
+            st.markdown(f"⏱️ **{elapsed_now:.0f}s** — 🟠 +5 bonus zone (valid up to 30s)")
+        else:
+            st.markdown(f"⌛ **{elapsed_now:.0f}s** — 🔴 Speed bonus gone. Answer correctly for 20 base pts.")
         choice = st.radio(
             "Your answer:",
             options=["A", "B", "C", "D"],
@@ -1042,6 +1167,99 @@ def _round4():
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# ROUND 5 — Myth Busters (True / False)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _round5():
+    st.markdown("### 💥 Round 5: Myth Busters")
+    st.markdown(
+        "8 Azure AI statements — decide if each is **True** or **False**. "
+        "These are based on real misconceptions that trip up exam candidates. **15 points per correct answer.**"
+    )
+    st.markdown(
+        '<div class="info-box">🏆 <strong>Maximum: 120 points</strong> &nbsp;|&nbsp; '
+        "8 statements × 15 pts each</div>",
+        unsafe_allow_html=True,
+    )
+
+    if st.session_state.cc_myth_submitted:
+        score = st.session_state.cc_myth_score
+        if score == 120:
+            st.success(f"All 8 myths busted! {score}/120 — Flawless Azure AI knowledge. 💥")
+        elif score >= 75:
+            st.info(f"Score: {score}/120 — Good instincts! Review the ones you missed below.")
+        else:
+            st.warning(f"Score: {score}/120 — Some tricky ones in there! Study the explanations.")
+
+        st.markdown("---")
+        for i, (myth, result) in enumerate(zip(MYTHS, st.session_state.cc_myth_results)):
+            icon = "✅" if result["is_correct"] else "❌"
+            correct_label = "TRUE" if myth["answer"] else "FALSE"
+            chosen_label = "TRUE" if result["chosen"] else "FALSE"
+            with st.container():
+                st.markdown(f"**{icon} Statement {i + 1}:** _{myth['statement']}_")
+                if result["is_correct"]:
+                    st.markdown(f"&nbsp;&nbsp;&nbsp;Your answer: **{chosen_label}** ✓")
+                else:
+                    st.markdown(
+                        f"&nbsp;&nbsp;&nbsp;Your answer: ~~{chosen_label}~~ — "
+                        f"Correct answer: **{correct_label}**"
+                    )
+                st.markdown(
+                    f'<div class="concept-box">{myth["explanation"]}</div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown("")
+        return
+
+    # ── Active form ────────────────────────────────────────────────────────────
+    with st.form("cc_round5_form"):
+        for i, myth in enumerate(MYTHS):
+            st.markdown(
+                f'<div class="module-card"><strong>Statement {i + 1}:</strong> {myth["statement"]}</div>',
+                unsafe_allow_html=True,
+            )
+            st.radio(
+                f"True or False for Statement {i + 1}",
+                options=[True, False],
+                format_func=lambda x: "✅  True" if x else "❌  False",
+                key=f"cc_myth_sel_{i}",
+                index=None,
+                horizontal=True,
+                label_visibility="collapsed",
+            )
+            st.markdown("")
+
+        submitted = st.form_submit_button(
+            "Submit Round 5 →", type="primary", use_container_width=True
+        )
+
+    if submitted:
+        results = []
+        score = 0
+        missing = []
+        for i, myth in enumerate(MYTHS):
+            chosen = st.session_state.get(f"cc_myth_sel_{i}")
+            if chosen is None:
+                missing.append(i + 1)
+                continue
+            is_correct = chosen == myth["answer"]
+            if is_correct:
+                score += 15
+            results.append({"chosen": chosen, "is_correct": is_correct})
+
+        if missing:
+            st.warning(
+                f"Please answer Statement(s): {', '.join(str(m) for m in missing)} before submitting."
+            )
+        else:
+            st.session_state.cc_myth_results = results
+            st.session_state.cc_myth_score = score
+            st.session_state.cc_myth_submitted = True
+            st.rerun()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # FINAL SCORE
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -1053,6 +1271,7 @@ def _final_score():
         st.session_state.cc_bug_submitted,
         st.session_state.cc_arch_submitted,
         st.session_state.cc_quiz_index >= len(SPEED_QUESTIONS),
+        st.session_state.cc_myth_submitted,
     ]
 
     if not any(rounds_done):
@@ -1100,6 +1319,12 @@ def _final_score():
                 )
             ),
         },
+        {
+            "Round": "💥 Round 5: Myth Busters",
+            "Score": st.session_state.cc_myth_score,
+            "Max": 120,
+            "Status": "✅ Submitted" if st.session_state.cc_myth_submitted else "⬜ Not yet submitted",
+        },
     ]
     df = pd.DataFrame(rows)
     st.dataframe(df, hide_index=True, use_container_width=True)
@@ -1108,17 +1333,17 @@ def _final_score():
 
     # ── Badge and total ────────────────────────────────────────────────────────
     col1, col2 = st.columns([1, 2])
-    col1.metric("Total Score", f"{total} / 550")
+    col1.metric("Total Score", f"{total} / 670")
     col2.markdown(f"## {badge}")
 
-    if total >= 451:
-        st.success("🏆 Champion — Outstanding performance across all domains!")
-    elif total >= 351:
-        st.success("🟢 Expert — You clearly understand the Azure AI Engineer landscape.")
-    elif total >= 201:
-        st.info("🟡 Associate — Solid foundation. Review the areas you missed.")
+    if total >= 561:
+        st.success("🏆 Champion — Exceptional! You've mastered every corner of Azure AI. 🎉")
+    elif total >= 431:
+        st.success("🟢 Expert — Outstanding! You clearly know the Azure AI Engineer landscape.")
+    elif total >= 251:
+        st.info("🟡 Associate — Solid foundation. Review the areas you missed and try again.")
     else:
-        st.warning("🔵 Apprentice — Keep studying! Go through the Explorer modules and retry.")
+        st.warning("🔵 Apprentice — Keep studying! Work through the Explorer modules and retry.")
 
     # ── Bar chart ──────────────────────────────────────────────────────────────
     fig, ax = plt.subplots(figsize=(8, 3))
@@ -1155,17 +1380,46 @@ def _final_score():
     st.markdown("---")
     st.markdown("**Share your score with the class:**")
     share_str = (
-        f"AI-102 Challenge Room | {badge} | Total: {total}/550 | "
+        f"AI-102 Challenge Room | {badge} | Total: {total}/670 | "
         f"R1 (Matcher): {st.session_state.cc_rm_score}/80 | "
         f"R2 (Bugs): {st.session_state.cc_bug_score}/80 | "
         f"R3 (Architect): {st.session_state.cc_arch_score}/90 | "
-        f"R4 (Speed): {st.session_state.cc_quiz_score}/300"
+        f"R4 (Speed): {st.session_state.cc_quiz_score}/300 | "
+        f"R5 (Myths): {st.session_state.cc_myth_score}/120"
     )
     st.code(share_str, language=None)
     st.caption("Copy the line above and paste it in the class chat!")
 
-    # ── Balloons — fires once for Expert or Champion ───────────────────────────
-    if total >= 351 and not st.session_state.cc_balloons_shown:
+    # ── Speed Quiz domain breakdown ────────────────────────────────────────────
+    if st.session_state.cc_quiz_index >= len(SPEED_QUESTIONS) and st.session_state.cc_quiz_answers:
+        domain_scores: dict = {}
+        domain_max: dict = {}
+        for qi, q in enumerate(SPEED_QUESTIONS):
+            d = q["domain"]
+            domain_scores.setdefault(d, 0)
+            domain_max.setdefault(d, 0)
+            domain_max[d] += 30
+            if qi in st.session_state.cc_quiz_answers:
+                ans = st.session_state.cc_quiz_answers[qi]
+                domain_scores[d] += ans["base"] + ans["bonus"]
+        pcts = {d: domain_scores[d] / domain_max[d] for d in domain_max if domain_max[d] > 0}
+        if pcts:
+            st.markdown("---")
+            st.markdown("**📊 Speed Quiz — Domain Breakdown:**")
+            cols = st.columns(len(pcts))
+            for col, (domain, pct) in zip(cols, pcts.items()):
+                emoji = "🟢" if pct >= 0.8 else "🟡" if pct >= 0.5 else "🔴"
+                col.metric(f"{emoji} {domain}", f"{pct:.0%}", f"{domain_scores[domain]}/{domain_max[domain]} pts")
+            weakest = min(pcts, key=pcts.get)
+            if pcts[weakest] < 0.8:
+                st.info(f"💡 **Focus area: {weakest}** ({pcts[weakest]:.0%}) — head to that module in the Explorer to review.")
+
+    # ── Celebrations — fires once for Expert or Champion ──────────────────────
+    if total >= 561 and not st.session_state.cc_balloons_shown:
+        st.session_state.cc_balloons_shown = True
+        st.balloons()
+        st.snow()
+    elif total >= 431 and not st.session_state.cc_balloons_shown:
         st.session_state.cc_balloons_shown = True
         st.balloons()
 
@@ -1190,33 +1444,35 @@ def show():
         unsafe_allow_html=True,
     )
 
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Round 1", "80 pts max", "Service Matcher")
-    col2.metric("Round 2", "80 pts max", "Spot the Bug")
-    col3.metric("Round 3", "90 pts max", "Architect")
-    col4.metric("Round 4", "300 pts max", "Speed Quiz")
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Round 1", "80 pts", "Service Matcher")
+    col2.metric("Round 2", "80 pts", "Spot the Bug")
+    col3.metric("Round 3", "90 pts", "Architect")
+    col4.metric("Round 4", "300 pts", "Speed Quiz")
+    col5.metric("Round 5", "120 pts", "Myth Busters")
 
     st.markdown(
         '<div class="info-box">'
-        "<strong>How to play:</strong> Complete the four rounds in any order. "
-        "Each round tests a different skill — service knowledge, debugging, architecture, and speed. "
+        "<strong>How to play:</strong> Complete all five rounds in any order. "
+        "Each round tests a different skill — service knowledge, debugging, architecture, speed, and myth-busting. "
         "Your score accumulates automatically. Head to the 🏆 Final Score tab at any time to check your standing.<br><br>"
         "<strong>Badge thresholds:</strong> "
-        "🔵 Apprentice (0–200) &nbsp;|&nbsp; "
-        "🟡 Associate (201–350) &nbsp;|&nbsp; "
-        "🟢 Expert (351–450) &nbsp;|&nbsp; "
-        "🏆 Champion (451+)"
+        "🔵 Apprentice (0–250) &nbsp;|&nbsp; "
+        "🟡 Associate (251–430) &nbsp;|&nbsp; "
+        "🟢 Expert (431–560) &nbsp;|&nbsp; "
+        "🏆 Champion (561+)"
         "</div>",
         unsafe_allow_html=True,
     )
 
     st.markdown("")
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "🎯 Round 1: Service Matcher",
         "🐛 Round 2: Spot the Bug",
         "🏗️ Round 3: Architect",
         "⚡ Round 4: Speed Quiz",
+        "💥 Round 5: Myth Busters",
         "🏆 Final Score",
     ])
 
@@ -1229,4 +1485,6 @@ def show():
     with tab4:
         _round4()
     with tab5:
+        _round5()
+    with tab6:
         _final_score()
